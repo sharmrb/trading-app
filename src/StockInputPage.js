@@ -1,44 +1,19 @@
 // StockInputPage.js
 // ApIKey = 60282fcda5b847378bfa7c03f57d91ec
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DataTable from './DataTable';
-
 
 const StockInputPage = () => {
   const [symbol, setSymbol] = useState('');
   const [data, setData] = useState({ sma5: [], sma30: [], time5: [], time30: [] });
-const[fetchingActive, setfetchingActive] = useState(false);
-const fetchingDuration= 2*60*1000        //2 mins CAN BE CHANGED
+  const [fetchingActive, setFetchingActive] = useState(false);
+  const fetchingDuration = 1 * 30 * 1000; // 2 minutes (in milliseconds)
+
   const handleSymbolChange = (e) => {
     setSymbol(e.target.value);
   };
 
-
-
-
-  const handleStartButtonClick = async () => {
-    try {
-        const apiKey = '60282fcda5b847378bfa7c03f57d91ec'; // Replace with your actual API key
-  
-        // Fetch 5-minute SMA data
-        const { sma: sma5, time: time5 } = await fetchData(symbol, '5min', apiKey);
-  
-        // Fetch 30-minute SMA data
-        const { sma: sma30, time: time30 } = await fetchData(symbol, '30min', apiKey);
-  
-        // Update the state with both 5-minute and 30-minute SMA data
-        setData({ sma5, sma30, time5, time30 });
-      } catch (error) {
-        // Handle errors
-      }
-      
-  
-
-    };
-
-
-
-const fetchData = async (symbol, interval, apiKey) => {
+  const fetchData = async (symbol, interval, apiKey) => {
     try {
       const apiUrl = `https://api.twelvedata.com/sma?symbol=${symbol}&interval=${interval}&apikey=${apiKey}&outputsize=1`;
       const apiResponse = await fetch(apiUrl, {
@@ -69,7 +44,62 @@ const fetchData = async (symbol, interval, apiKey) => {
       throw error;
     }
   };
-  
+
+  const startFetchingData = () => {
+    if (!fetchingActive) {
+      // Start data fetching
+      setFetchingActive(true);
+    }
+  };
+
+  const stopFetchingData = () => {
+    if (fetchingActive) {
+      // Stop data fetching
+      setFetchingActive(false);
+    }
+  };
+
+  useEffect(() => {
+    let fetchIntervalId;
+
+    const fetchAndScheduleData = async () => {
+      try {
+        const apiKey = '60282fcda5b847378bfa7c03f57d91ec'; // Replace with your actual API key
+
+        // Fetch 5-minute SMA data
+        const { sma: newSma5, time: newTime5 } = await fetchData(symbol, '5min', apiKey);
+
+        // Fetch 30-minute SMA data
+        const { sma: newSma30, time: newTime30 } = await fetchData(symbol, '30min', apiKey);
+
+        // Update the state with new SMA values and timestamps
+        setData((prevData) => ({
+          sma5: [newSma5, ...prevData.sma5],
+          sma30: [newSma30, ...prevData.sma30],
+          time5: [newTime5, ...prevData.time5],
+          time30: [newTime30, ...prevData.time30],
+        }));
+      } catch (error) {
+        // Handle errors
+      }
+
+      // Schedule the next data fetch after the interval duration
+      if (fetchingActive) {
+        fetchIntervalId = setTimeout(fetchAndScheduleData, fetchingDuration);
+      }
+    };
+
+    // Start data fetching when `fetchingActive` becomes `true`
+    if (fetchingActive) {
+      fetchAndScheduleData();
+    }
+
+    return () => {
+      // Clean up the interval when the component unmounts or `fetchingActive` becomes `false`
+      clearTimeout(fetchIntervalId);
+    };
+  }, [fetchingActive, fetchingDuration, symbol]);
+
   return (
     <div>
       <h1>Day Trading App</h1>
@@ -83,18 +113,14 @@ const fetchData = async (symbol, interval, apiKey) => {
         />
       </div>
       <div>
-        <button onClick={handleStartButtonClick}>Start</button>
+        <button onClick={startFetchingData}>Start</button>
+        <button onClick={stopFetchingData} disabled={!fetchingActive}>
+          Stop
+        </button>
       </div>
-      {data && (
-
-          <h2>Fetched Data</h2>
-         
-
-      )}
       <DataTable data={data} />
     </div>
   );
 };
-  
 
 export default StockInputPage;

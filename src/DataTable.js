@@ -7,7 +7,7 @@ const DataTable = ({ data }) => {
   
     return (
       <div>
-        <h2>SMA Data Table</h2>
+        <h2>Fetched SMA Data Table</h2>
         <table>
           <thead>
             <tr>
