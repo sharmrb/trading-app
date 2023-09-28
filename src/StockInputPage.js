@@ -1,5 +1,6 @@
 // StockInputPage.js
 // ApIKey = 60282fcda5b847378bfa7c03f57d91ec
+import TradingComponent from './TradingComponent';
 import React, { useState, useEffect } from 'react';
 import DataTable from './DataTable';
 
@@ -7,7 +8,7 @@ const StockInputPage = () => {
   const [symbol, setSymbol] = useState('');
   const [data, setData] = useState([]);
   const [fetchingActive, setFetchingActive] = useState(false);
-  const fetchingDuration = 1 * 60 * 1000; // 1 minute
+  const fetchingDuration = 1 * 60 * 1000; // 1 minute can be changed
   let fetchIntervalId = null;
 
   const handleSymbolChange = (e) => {
@@ -48,17 +49,17 @@ const StockInputPage = () => {
 
   const fetchAndScheduleData = async () => {
     try {
-      const apiKey = '60282fcda5b847378bfa7c03f57d91ec'; // Replace with your actual API key
+      const apiKey = '60282fcda5b847378bfa7c03f57d91ec'; 
 
       // Fetch 1-minute SMA data
       const fetchedData = await fetchData(symbol, '1min', apiKey);
       console.log(fetchedData);
       if (fetchedData.length >= 30) {
-        // Calculate SMA5 and SMA30 based on the last 30 minutes of data
+        // Calculate SMA5 and SMA30 based on the last 30 minutes 
         const last30MinutesData = fetchedData.slice(0, 30);
         const newSma10 = calculateSMA(last30MinutesData, 10);
         const newSma30 = calculateSMA(last30MinutesData, 30);
-
+        
         // Append the new data to the existing data
         setData((prevData) => [
           {
@@ -103,24 +104,24 @@ const StockInputPage = () => {
 
   const calculateSMA = (data, period) => {
     if (data.length < period) {
-      // Not enough data points to calculate SMA
+      
       return null;
     }
 
-    // Slice the last 'period' data points
+    
     const slice = data.slice(0, period);
 
     // Calculate the sum of the values in the slice
     const sum = slice.reduce((accumulator, currentValue) => accumulator + currentValue.close, 0);
 
-    // Calculate the SMA
+    
     const sma = sum / period;
 
     return sma;
   };
 
   useEffect(() => {
-    // Cleanup function to clear the interval when the component unmounts
+    // Cleanup function to clear the interval 
     return () => {
       if (fetchingActive) {
         clearTimeout(fetchIntervalId);
@@ -132,7 +133,7 @@ const StockInputPage = () => {
     fetchIntervalId = setTimeout(fetchAndScheduleData, fetchingDuration);
  }
  }, [fetchingActive, fetchingDuration]);
-
+ 
   return (
     <div>
       <h1>Day Trading App</h1>
@@ -152,9 +153,15 @@ const StockInputPage = () => {
         </button>
       </div>
       <DataTable data={data} />
+      <TradingComponent symbol={symbol} data={data} />  
     </div>
+  
   );
+  
+
 };
+
+
 
 export default StockInputPage;
 
