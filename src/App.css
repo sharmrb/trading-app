@@ -36,3 +36,83 @@
     transform: rotate(360deg);
   }
 }
+/* Style for tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+th, td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+/* Style for buttons */
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Style for input fields */
+input[type="text"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Style for headings */
+h1, h2 {
+  color: #333;
+}
+
+/* Style for containers */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Style for trade history */
+.trade-history {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+/* Style for notifications or alerts */
+.alert {
+  padding: 10px;
+  background-color: #ff5722;
+  color: #fff;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* Style for success messages */
+.success {
+  padding: 10px;
+  background-color: #4caf50;
+  color: #fff;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+
+
+h1 {
+  text-align: center; /* Center text within all heading elements */
+}

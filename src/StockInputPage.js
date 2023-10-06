@@ -3,6 +3,7 @@
 import TradingComponent from './TradingComponent';
 import React, { useState, useEffect } from 'react';
 import DataTable from './DataTable';
+import StockChart from './StockChart';
 
 const StockInputPage = () => {
   const [symbol, setSymbol] = useState('');
@@ -72,7 +73,7 @@ const StockInputPage = () => {
         ]);
       }
     } catch (error) {
-      // Handle errors
+      
     }
 
     // Schedule the next data fetch after the interval duration
@@ -94,7 +95,7 @@ const StockInputPage = () => {
 
   const handleStopButtonClick = () => {
     if (fetchingActive) {
-      // Stop data fetching
+      
       setFetchingActive(false);
 
       // Clear the fetch interval
@@ -121,7 +122,7 @@ const StockInputPage = () => {
   };
 
   useEffect(() => {
-    // Cleanup function to clear the interval 
+    
     return () => {
       if (fetchingActive) {
         clearTimeout(fetchIntervalId);
@@ -154,6 +155,7 @@ const StockInputPage = () => {
       </div>
       <DataTable data={data} />
       <TradingComponent symbol={symbol} data={data} />  
+      {/* <StockChart data={data} /> */}
     </div>
   
   );

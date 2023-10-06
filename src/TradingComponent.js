@@ -7,6 +7,7 @@ const TradingComponent = ({ symbol, data }) => {
   const [stockHoldings, setStockHoldings] = useState(0); // Number of shares 
   const [tradeHistory, setTradeHistory] = useState([]);
   const [currentPrice, setCurrentPrice] = useState(0);
+  const [buyingPrice, setBuyingPrice] = useState(null);
   useEffect(() => {
     
     if (data.length >= 2) {
@@ -19,14 +20,16 @@ const TradingComponent = ({ symbol, data }) => {
       const sma30Previous = secondToLastData.sma30;
   
       // Buy condition: SMA10 crosses above SMA30
-      if (sma10Current > sma30Current )//&& sma10Previous <= sma30Previous)
+      if (sma10Current > sma30Current && sma10Previous <= sma30Previous)   //orignal buy condidtion sma10Current > sma30Current && sma10Previous <= sma30Previous || sma10Current < sma30Current && sma10Previous >= sma30Previous
        {
         const sharesToBuy = Math.floor(cashBalance / lastData.close); // Buy as many shares as possible
         if (sharesToBuy > 0) {
           const cost = sharesToBuy * lastData.close;
           setCashBalance((prevBalance) => prevBalance - cost);
           setStockHoldings((prevHoldings) => prevHoldings + sharesToBuy);
+          setBuyingPrice(lastData.close);
           console.log("buying");
+          console.log(buyingPrice);
             setTradeHistory([
                 ...tradeHistory,
                 {
@@ -40,7 +43,7 @@ const TradingComponent = ({ symbol, data }) => {
       }
   
       // Sell condition: SMA10 crosses below SMA30
-      if (sma10Current < sma30Current)// && sma10Previous >= sma30Previous
+      if (sma10Current < sma30Current && sma10Previous >= sma30Previous  ) //if buying price is equal to sma30 then sell //|| buyingPrice <= sma30Current
       {
         if (stockHoldings > 0) {
           const saleValue = stockHoldings * lastData.close;
