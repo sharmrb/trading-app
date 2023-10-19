@@ -11,6 +11,7 @@ const StockInputPage = () => {
   const [fetchingActive, setFetchingActive] = useState(false);
   const fetchingDuration = 1 * 60 * 1000; // 1 minute can be changed
   let fetchIntervalId = null;
+  const [quantityToBuy, setQuantityToBuy] = useState(100); 
 
   const handleSymbolChange = (e) => {
     setSymbol(e.target.value);
@@ -58,10 +59,10 @@ const StockInputPage = () => {
       if (fetchedData.length >= 30) {
         // Calculate SMA5 and SMA30 based on the last 30 minutes 
         const last30MinutesData = fetchedData.slice(0, 30);
-        const newSma10 = calculateSMA(last30MinutesData, 10);
-        const newSma30 = calculateSMA(last30MinutesData, 30);
+        const newSma10 = calculateSMA(last30MinutesData, 10).toFixed(2);
+        const newSma30 = calculateSMA(last30MinutesData, 30).toFixed(2);
         
-        // Append the new data to the existing data
+        //add the new data to the existing data
         setData((prevData) => [
           {
             time: fetchedData[0].time,
@@ -83,12 +84,21 @@ const StockInputPage = () => {
     }
   };
 
+  const handleSetQuantity = () => {
+   
+    if (quantityToBuy > 0) {
+      console.log('Setting quantity to', quantityToBuy);
+    } else {
+      console.log('Invalid quantity');
+    }
+  };
+
   const handleStartButtonClick = () => {
     if (!fetchingActive) {
       // Start data fetching
       setFetchingActive(true);
 
-      // Fetch data immediately
+      // Fetch data 
       fetchAndScheduleData();
     }
   };
@@ -98,7 +108,7 @@ const StockInputPage = () => {
       
       setFetchingActive(false);
 
-      // Clear the fetch interval
+      //clear the fetch interval
       clearTimeout(fetchIntervalId);
     }
   };
@@ -112,7 +122,7 @@ const StockInputPage = () => {
     
     const slice = data.slice(0, period);
 
-    // Calculate the sum of the values in the slice
+    //calculate the sum of the values in the slice
     const sum = slice.reduce((accumulator, currentValue) => accumulator + currentValue.close, 0);
 
     
@@ -135,9 +145,10 @@ const StockInputPage = () => {
  }
  }, [fetchingActive, fetchingDuration]);
  
-  return (
-    <div>
-      <h1>Day Trading App</h1>
+ return (
+  <div>
+    <h1>Day Trading App</h1>
+    <div className="top-bar">
       <div>
         <label htmlFor="stockSymbol">Enter Stock Symbol:</label>
         <input
@@ -147,18 +158,24 @@ const StockInputPage = () => {
           onChange={handleSymbolChange}
         />
       </div>
-      <div>
-        <button onClick={handleStartButtonClick}>Start</button>
-        <button onClick={handleStopButtonClick} disabled={!fetchingActive}>
-          Stop
-        </button>
-      </div>
-      <DataTable data={data} />
-      <TradingComponent symbol={symbol} data={data} />  
-      {/* <StockChart data={data} /> */}
+      <button onClick={handleStartButtonClick}>Start</button>
+      <button onClick={handleStopButtonClick} disabled={!fetchingActive}>
+        Stop
+      </button>
+      <input
+        type="number"
+        id="quantityToBuy"
+        placeholder="Set Quantity"
+        value={quantityToBuy}
+        onChange={(e) => setQuantityToBuy(Number(e.target.value))}
+      />
+      <button onClick={handleSetQuantity}>Set Quantity</button>
     </div>
-  
-  );
+    <DataTable data={data} />
+    <TradingComponent symbol={symbol} data={data} quantityToBuy={quantityToBuy} />
+  </div>
+);
+
   
 
 };

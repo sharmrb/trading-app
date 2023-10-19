@@ -1,13 +1,16 @@
 // TradingComponent.js
 import React, { useState, useEffect } from 'react';
 
-const TradingComponent = ({ symbol, data }) => {
+const TradingComponent = ({ symbol, data , quantityToBuy }) => {
   // State for tracking trading-related data
   const [cashBalance, setCashBalance] = useState(10000); // Starting balance of $10,000
   const [stockHoldings, setStockHoldings] = useState(0); // Number of shares 
   const [tradeHistory, setTradeHistory] = useState([]);
   const [currentPrice, setCurrentPrice] = useState(0);
   const [buyingPrice, setBuyingPrice] = useState(null);
+  const [canBuy, setCanBuy] = useState(true);
+
+
   useEffect(() => {
     
     if (data.length >= 2) {
@@ -20,21 +23,22 @@ const TradingComponent = ({ symbol, data }) => {
       const sma30Previous = secondToLastData.sma30;
   
       // Buy condition: SMA10 crosses above SMA30
-      if (sma10Current > sma30Current && sma10Previous <= sma30Previous)   //orignal buy condidtion sma10Current > sma30Current && sma10Previous <= sma30Previous || sma10Current < sma30Current && sma10Previous >= sma30Previous
+      if (sma10Current > sma30Current && canBuy)  //&& sma10Previous <= sma30Previous //orignal buy condidtion sma10Current > sma30Current && sma10Previous <= sma30Previous || sma10Current < sma30Current && sma10Previous >= sma30Previous
        {
-        const sharesToBuy = Math.floor(cashBalance / lastData.close); // Buy as many shares as possible
-        if (sharesToBuy > 0) {
-          const cost = sharesToBuy * lastData.close;
+        //const sharesToBuy = Math.floor(cashBalance / lastData.close); // Buy as many shares as possible
+        if (quantityToBuy > 0) {
+          const cost = quantityToBuy * lastData.close;
           setCashBalance((prevBalance) => prevBalance - cost);
-          setStockHoldings((prevHoldings) => prevHoldings + sharesToBuy);
+          setStockHoldings((prevHoldings) => prevHoldings + quantityToBuy);
           setBuyingPrice(lastData.close);
+          setCanBuy(false);
           console.log("buying");
           console.log(buyingPrice);
             setTradeHistory([
                 ...tradeHistory,
                 {
                 type: 'Buy',
-                shares: sharesToBuy,
+                shares: quantityToBuy,
                 price: lastData.close,
                 time: new Date().toLocaleTimeString(),
                 },
@@ -43,18 +47,19 @@ const TradingComponent = ({ symbol, data }) => {
       }
   
       // Sell condition: SMA10 crosses below SMA30
-      if (sma10Current < sma30Current && sma10Previous >= sma30Previous  ) //if buying price is equal to sma30 then sell //|| buyingPrice <= sma30Current
+      if (sma10Current < sma30Current   ) //&& sma10Previous >= sma30Previous//if buying price is equal to sma30 then sell //|| buyingPrice <= sma30Current
       {
-        if (stockHoldings > 0) {
-          const saleValue = stockHoldings * lastData.close;
+        if (quantityToBuy > 0 && quantityToBuy <= stockHoldings) {
+          const saleValue = quantityToBuy * lastData.close;
           setCashBalance((prevBalance) => prevBalance + saleValue);
           setStockHoldings(0);
           console.log("selling");
+          setCanBuy(true);
             setTradeHistory([
                 ...tradeHistory,
                 {
                 type: 'Sell',
-                shares: stockHoldings,
+                shares: quantityToBuy,
                 price: lastData.close,
                 time: new Date().toLocaleTimeString(),
                 },
@@ -68,6 +73,7 @@ const TradingComponent = ({ symbol, data }) => {
   const renderTradeHistory = () => {
     return (
       <div>
+        
         <h2>Trade History</h2>
         <ul>
           {tradeHistory.map((trade, index) => (
