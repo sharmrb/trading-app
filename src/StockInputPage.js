@@ -118,7 +118,8 @@ const StockInputPage = () => {
       
       return null;
     }
-
+ 
+  ;
     
     const slice = data.slice(0, period);
 
@@ -144,7 +145,28 @@ const StockInputPage = () => {
     fetchIntervalId = setTimeout(fetchAndScheduleData, fetchingDuration);
  }
  }, [fetchingActive, fetchingDuration]);
- 
+ const callBuyScript = () => {
+  fetch('http://localhost:3050/run-robinhood-script', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({}),
+})
+.then(response => response.json())
+.then(data => {
+    // Handle the response from the server
+    if (data.error) {
+        alert('Error: ' + data.error);
+    } else {
+        alert('Success: ' + data.message);
+    }
+})
+.catch(error => {
+    console.error(error);
+    alert('An error occurred while executing the script.');
+});
+}
  return (
   <div>
     <h1>Day Trading App</h1>
@@ -170,6 +192,7 @@ const StockInputPage = () => {
         onChange={(e) => setQuantityToBuy(Number(e.target.value))}
       />
       <button onClick={handleSetQuantity}>Set Quantity</button>
+      <button onClick={callBuyScript}>Buy</button>
     </div>
     <DataTable data={data} />
     <TradingComponent symbol={symbol} data={data} quantityToBuy={quantityToBuy} />
