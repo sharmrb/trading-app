@@ -180,6 +180,8 @@ const StockInputPage = () => {
     alert('An error occurred while executing the script.');
 });
 }
+
+//Sell Command
 const callSellScript = () => {
   fetch('http://localhost:3050/api/sell-stock', {
     method: 'POST',
@@ -189,7 +191,7 @@ const callSellScript = () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data.message); // Should log 'Sell order placed successfully' if the request was successful
+      console.log(data.message); // Should log 'Sell order placed successfully' if it works
     })
     .catch((error) => {
       console.error('Error placing sell order:', error);
@@ -203,6 +205,7 @@ const fetchStockUrl = async () => {
     console.error('Error triggering the function on the backend:', error);
   }
 };
+//sending current price to backend
 const fetchCurrentPrice = async () => {
   try {
     console.log('Fetching current price...');
