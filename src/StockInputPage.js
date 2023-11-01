@@ -4,14 +4,19 @@ import TradingComponent from './TradingComponent';
 import React, { useState, useEffect } from 'react';
 import DataTable from './DataTable';
 import StockChart from './StockChart';
+import axios from 'axios';
 
+let currentprice=0;
 const StockInputPage = () => {
   const [symbol, setSymbol] = useState('');
   const [data, setData] = useState([]);
   const [fetchingActive, setFetchingActive] = useState(false);
   const fetchingDuration = 1 * 60 * 1000; // 1 minute can be changed
   let fetchIntervalId = null;
-  const [quantityToBuy, setQuantityToBuy] = useState(100); 
+  const [quantityToBuy, setQuantityToBuy] = useState(1); 
+
+  const [stockUrl, setStockUrl] = useState('');
+  const [urlFetched, setUrlFetched] = useState(false);
 
   const handleSymbolChange = (e) => {
     setSymbol(e.target.value);
@@ -33,6 +38,12 @@ const StockInputPage = () => {
 
       const apiData = await apiResponse.json();
       console.log('API Response:', apiData);
+      //setting the latest close price to send to back end
+      if (apiData.values && apiData.values.length > 0) {
+        currentprice = parseFloat(apiData.values[0].close); 
+        console.log('Latest Close Price:', currentprice);
+        fetchCurrentPrice();
+    }
       if (!apiData.values || !Array.isArray(apiData.values)) {
         throw new Error('API response invalid data');
       }
@@ -95,6 +106,7 @@ const StockInputPage = () => {
 
   const handleStartButtonClick = () => {
     if (!fetchingActive) {
+      fetchStockUrl();
       // Start data fetching
       setFetchingActive(true);
 
@@ -118,7 +130,8 @@ const StockInputPage = () => {
       
       return null;
     }
-
+ 
+  ;
     
     const slice = data.slice(0, period);
 
@@ -144,7 +157,63 @@ const StockInputPage = () => {
     fetchIntervalId = setTimeout(fetchAndScheduleData, fetchingDuration);
  }
  }, [fetchingActive, fetchingDuration]);
- 
+
+ const callBuyScript = () => {
+  fetch('http://localhost:3050/run-robinhood-script', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({}),
+})
+.then(response => response.json())
+.then(data => {
+    // Handle the response from the server
+    if (data.error) {
+        alert('Error: ' + data.error);
+    } else {
+        alert('Success: ' + data.message);
+    }
+})
+.catch(error => {
+    console.error(error);
+    alert('An error occurred while executing the script.');
+});
+}
+
+//Sell Command
+const callSellScript = () => {
+  fetch('http://localhost:3050/api/sell-stock', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data.message); // Should log 'Sell order placed successfully' if it works
+    })
+    .catch((error) => {
+      console.error('Error placing sell order:', error);
+    });
+}
+const fetchStockUrl = async () => {
+  try {
+    console.log('Fetching stock url...');
+    await axios.post('http://localhost:3050/api/fetch-stock-url', { symbol });
+  } catch (error) {
+    console.error('Error triggering the function on the backend:', error);
+  }
+};
+//sending current price to backend
+const fetchCurrentPrice = async () => {
+  try {
+    console.log('Fetching current price...');
+    await axios.post('http://localhost:3050/api/fetch-current-price', { currentprice });
+  } catch (error) {
+    console.error('Error triggering the function on the backend:', error);
+  }
+}
  return (
   <div>
     <h1>Day Trading App</h1>
@@ -170,6 +239,8 @@ const StockInputPage = () => {
         onChange={(e) => setQuantityToBuy(Number(e.target.value))}
       />
       <button onClick={handleSetQuantity}>Set Quantity</button>
+      <button onClick={callBuyScript}>Buy</button>
+      <button onClick={callSellScript}>Sell</button>
     </div>
     <DataTable data={data} />
     <TradingComponent symbol={symbol} data={data} quantityToBuy={quantityToBuy} />
