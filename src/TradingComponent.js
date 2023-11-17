@@ -9,11 +9,12 @@ const TradingComponent = ({ symbol, data , quantityToBuy }) => {
   const [currentPrice, setCurrentPrice] = useState(0);
   const [buyingPrice, setBuyingPrice] = useState(null);
   const [canBuy, setCanBuy] = useState(true);
+  const [isTradingPaused, setIsTradingPaused] = useState(false);
 
 
   useEffect(() => {
     
-    if (data.length >= 2) {
+    if (data.length >= 2 && !isTradingPaused) {
       const lastData = data[0];
       const secondToLastData = data[1];
   
@@ -64,10 +65,15 @@ const TradingComponent = ({ symbol, data , quantityToBuy }) => {
                 time: new Date().toLocaleTimeString(),
                 },
             ]);
+            //Pausing Trade for 4 Minutes after each Sell
+            setIsTradingPaused(true);
+            setTimeout(() => {
+              setIsTradingPaused(false);
+            }, 4 * 60 * 1000);
         }
       }
     }
-  }, [data, cashBalance, stockHoldings]);
+  }, [data, cashBalance, stockHoldings,isTradingPaused]);
 
   
   const renderTradeHistory = () => {
