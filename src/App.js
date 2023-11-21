@@ -1,8 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import { restClient } from '@polygon.io/client-js';
-//import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
-//import LoginPage from './LoginPage';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import LoginPage from './LoginPage';
 import StockInputPage from './StockInputPage';
 const rest = restClient('WVJPIWLBg78WEjm8XqPQq4DcYOYQCCH6');
 
@@ -19,15 +19,15 @@ function App() {
     //   console.error('An error happened:', e);
     // })
 
-    <StockInputPage />
+   // ORignal code----- <StockInputPage />
 
-  //  <Router>
-  //     <Switch>
-  //       <Route path="/login" component={LoginPage} />
-  //       <Route path="/stock-input" component={StockInputPage} />
-  //       <Route render={() => <Redirect to="/login" />} />
-  //     </Switch>
-  //   </Router>
+<Router>
+  <Routes>
+    <Route path="/login" element={<LoginPage />} />
+    <Route path="/" element={<StockInputPage />} />
+    <Route path="*" element={<Navigate to="/login" />} />
+  </Routes>
+</Router>
  
 );
 }

@@ -1,0 +1,89 @@
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Set the container height to the full viewport height */
+}
+
+.login-box {
+    border: 1px solid #ccc;
+    padding: 20px;
+    width: 300px; /* Set the width of the box */
+}
+
+/* Add space between form fields */
+.login-box form {
+    margin-bottom: 15px;
+}
+
+/* Style form labels */
+.login-box label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Style form inputs */
+.login-box input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+/* Style login and skip buttons */
+.login-box button {
+    width: 100%;
+    padding: 10px;
+    background-color: #3208c9;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* Style skip button to be in line with login button */
+.login-box button:last-child {
+    margin-top: 10px;
+}
+
+
+body.login-page {
+  background-color: darkgrey;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.login-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-box form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-box label {
+  margin-bottom: 8px;
+}
+
+.login-box input {
+  padding: 8px;
+  margin-bottom: 16px;
+}
+
+.login-box button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.login-box button:hover {
+  background-color: #0056b3;
+}
