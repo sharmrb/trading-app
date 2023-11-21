@@ -214,10 +214,38 @@ const fetchCurrentPrice = async () => {
     console.error('Error triggering the function on the backend:', error);
   }
 }
+
+//Logging out of Robinhood 
+const handleLogout = () => {
+  fetch('http://localhost:3050/api/logout', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(response => response.json())
+  .then(data => {
+      // Handle the response from the server
+      if (data.error) {
+          alert('Error: ' + data.error);
+      } else {
+          alert('Success: ' + data.message);
+      }
+  })
+    .catch((error) => {
+      console.error('Error expiring token:', error);
+    });
+};
+
+
+
+
  return (
   <div>
     <h1>Day Trading App</h1>
+    
     <div className="top-bar">
+      
       <div>
         <label htmlFor="stockSymbol">Enter Stock Symbol:</label>
         <input
@@ -241,6 +269,7 @@ const fetchCurrentPrice = async () => {
       <button onClick={handleSetQuantity}>Set Quantity</button>
       <button onClick={callBuyScript}>Buy</button>
       <button onClick={callSellScript}>Sell</button>
+      <button onClick={handleLogout}>Logout</button>
     </div>
     <DataTable data={data} />
     <TradingComponent symbol={symbol} data={data} quantityToBuy={quantityToBuy} />
