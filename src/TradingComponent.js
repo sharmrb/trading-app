@@ -1,7 +1,7 @@
 // TradingComponent.js
 import React, { useState, useEffect } from 'react';
 
-const TradingComponent = ({ symbol, data , quantityToBuy }) => {
+const TradingComponent = ({ symbol, data , quantityToBuy, onBuy, onSell }) => {
   // State for tracking trading-related data
   const [cashBalance, setCashBalance] = useState(10000); // Starting balance of $10,000
   const [stockHoldings, setStockHoldings] = useState(0); // Number of shares 
@@ -35,6 +35,7 @@ const TradingComponent = ({ symbol, data , quantityToBuy }) => {
           setCanBuy(false);
           console.log("buying");
           console.log(buyingPrice);
+          onBuy();
             setTradeHistory([
                 ...tradeHistory,
                 {
@@ -56,6 +57,7 @@ const TradingComponent = ({ symbol, data , quantityToBuy }) => {
           setStockHoldings(0);
           console.log("selling");
           setCanBuy(true);
+          onSell();
             setTradeHistory([
                 ...tradeHistory,
                 {

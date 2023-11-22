@@ -272,7 +272,8 @@ const handleLogout = () => {
       <button onClick={handleLogout}>Logout</button>
     </div>
     <DataTable data={data} />
-    <TradingComponent symbol={symbol} data={data} quantityToBuy={quantityToBuy} />
+    <TradingComponent symbol={symbol} data={data} quantityToBuy={quantityToBuy} onBuy={callBuyScript}
+        onSell={callSellScript}/>
   </div>
 );
 
