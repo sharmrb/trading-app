@@ -17,7 +17,7 @@ const LoginPage = () => {
   };
 
   const loginUser = async () => {
-    const response = await fetch('http://localhost:3050/api/login', {
+    const response = await fetch('https://trading-backend5.onrender.com/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -28,6 +28,7 @@ const LoginPage = () => {
     if (response.ok) {
       alert('Login successful');
       // Redirect to the stock input page or perform other actions
+      navigate('/main', { replace: true });
     } else {
       const data = await response.json();
       alert(`Login failed: ${data.error}`);
@@ -35,7 +36,7 @@ const LoginPage = () => {
   };
 
   const handleSkip = () => {
-    navigate('/', { replace: true });
+    navigate('/main', { replace: true });
   };
 
   return (

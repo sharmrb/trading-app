@@ -24,7 +24,7 @@ function App() {
 <Router>
   <Routes>
     <Route path="/login" element={<LoginPage />} />
-    <Route path="/" element={<StockInputPage />} />
+    <Route path="/main" element={<StockInputPage />} />
     <Route path="*" element={<Navigate to="/login" />} />
   </Routes>
 </Router>

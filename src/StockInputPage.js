@@ -159,7 +159,7 @@ const StockInputPage = () => {
  }, [fetchingActive, fetchingDuration]);
 
  const callBuyScript = () => {
-  fetch('http://localhost:3050/run-robinhood-script', {
+  fetch('https://trading-backend5.onrender.com/run-robinhood-script', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
@@ -183,7 +183,7 @@ const StockInputPage = () => {
 
 //Sell Command
 const callSellScript = () => {
-  fetch('http://localhost:3050/api/sell-stock', {
+  fetch('https://trading-backend5.onrender.com/api/sell-stock', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -200,7 +200,7 @@ const callSellScript = () => {
 const fetchStockUrl = async () => {
   try {
     console.log('Fetching stock url...');
-    await axios.post('http://localhost:3050/api/fetch-stock-url', { symbol });
+    await axios.post('https://trading-backend5.onrender.com/api/fetch-stock-url', { symbol });
   } catch (error) {
     console.error('Error triggering the function on the backend:', error);
   }
@@ -209,7 +209,7 @@ const fetchStockUrl = async () => {
 const fetchCurrentPrice = async () => {
   try {
     console.log('Fetching current price...');
-    await axios.post('http://localhost:3050/api/fetch-current-price', { currentprice });
+    await axios.post('https://trading-backend5.onrender.com/api/fetch-current-price', { currentprice });
   } catch (error) {
     console.error('Error triggering the function on the backend:', error);
   }
@@ -217,7 +217,7 @@ const fetchCurrentPrice = async () => {
 
 //Logging out of Robinhood 
 const handleLogout = () => {
-  fetch('http://localhost:3050/api/logout', {
+  fetch('https://trading-backend5.onrender.com/api/logout', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
